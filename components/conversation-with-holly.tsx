@@ -33,7 +33,7 @@ export function ConversationWithHolly({
   const [isMuted, setIsMuted] = useState(false)
   const [showInteractionOptions, setShowInteractionOptions] = useState(false)
   const [textInput, setTextInput] = useState("")
-  const recognitionRef = useRef<any>(null)
+  // TODO: Replace recognitionRef with WebRTC connection ref
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -41,64 +41,16 @@ export function ConversationWithHolly({
     }
   }, [messages])
 
-  // Initialize speech recognition
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition
-      recognitionRef.current = new SpeechRecognition()
-      recognitionRef.current.continuous = true
-      recognitionRef.current.interimResults = true
-      recognitionRef.current.lang = 'en-US'
+  // TODO: Initialize WebRTC connection here
+  // Your engineer should:
+  // 1. Create WebRTC peer connection
+  // 2. Set up audio input stream (getUserMedia)
+  // 3. Connect to realtime API WebSocket
+  // 4. Handle incoming audio responses
+  // 5. Manage connection lifecycle (cleanup on unmount)
 
-      recognitionRef.current.onresult = (event: any) => {
-        let finalTranscript = ''
-        let interimTranscript = ''
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript + ' '
-          } else {
-            interimTranscript += transcript
-          }
-        }
-
-        if (finalTranscript && onVoiceInput) {
-          onVoiceInput(finalTranscript.trim())
-        }
-      }
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error)
-        setIsListening(false)
-      }
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false)
-      }
-    }
-
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop()
-      }
-    }
-  }, [onVoiceInput])
-
-  // Handle voice activation and mute state
-  useEffect(() => {
-    if (isVoiceActive && !isMuted && recognitionRef.current && !isListening) {
-      try {
-        recognitionRef.current.start()
-        setIsListening(true)
-      } catch (e) {
-        console.error('Failed to start speech recognition:', e)
-      }
-    } else if ((isMuted || !isVoiceActive) && recognitionRef.current && isListening) {
-      recognitionRef.current.stop()
-      setIsListening(false)
-    }
-  }, [isVoiceActive, isMuted, isListening])
+  // TODO: Handle voice activation and mute state with WebRTC
+  // Update setIsListening based on actual connection state
 
   const renderMessage = (message: ConversationMessage) => {
     const isHolly = message.role === "holly"
