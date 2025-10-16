@@ -135,12 +135,6 @@ export function DateSelectionStep({ bookingState, highlightedDateRangeId }: Date
                     {currentQuestion.question}
                   </div>
                 </div>
-
-                <div className="flex justify-center">
-                  <div className="text-white/80 text-sm">
-                    Press Enter to answer
-                  </div>
-                </div>
               </div>
             </div>
           )}
