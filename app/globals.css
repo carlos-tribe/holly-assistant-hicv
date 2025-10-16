@@ -1,0 +1,313 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* HICV Brand Colors - Primary */
+  --hicv-citrus-sunrise: #F76B3C;
+
+  /* HICV Support Colors - Orange Family */
+  --hicv-coral-reef: #FF9B75;
+  --hicv-rustic-sunset: #D8734F;
+  --hicv-golden-sunset: #F3B54A;
+
+  /* HICV Support Colors - Blue/Green Family */
+  --hicv-ocean-mist: #5FA6A6;
+  --hicv-coastal-breeze: #9BC5B7;
+  --hicv-legacy-green: #1C4B34;
+
+  /* HICV Neutrals */
+  --hicv-seashell-sand: #F2F1E9;
+  --hicv-coconut-husk: #D0B7A1;
+  --hicv-woodland-oak: #46403F;
+  --hicv-white: #FFFFFF;
+
+  /* Legacy Variables for Compatibility */
+  --holly-orange: #F76B3C;
+  --holly-green: #1C4B34;
+  --user-bubble: #F2F1E9;
+  --tour-button: #F3B54A;
+  --background: #ffffff;
+  --light-background: #fafafa;
+  --primary-text: #46403F;
+  --secondary-text: #46403F;
+  --light-text: #46403F;
+  --success: #1C4B34;
+  --border-color: #D0B7A1;
+  --card-shadow: #00000010;
+
+  /* Updated design tokens to use HICV Brand palette */
+  --background: oklch(1 0 0); /* #FFFFFF */
+  --foreground: oklch(0.32 0.01 40); /* #46403F Woodland Oak */
+  --card: oklch(0.98 0 0); /* #FAFAFA */
+  --card-foreground: oklch(0.32 0.01 40); /* #46403F Woodland Oak */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.32 0.01 40);
+  --primary: oklch(0.61 0.16 40); /* #F76B3C Citrus Sunrise */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.01 60); /* #F2F1E9 Seashell Sand */
+  --secondary-foreground: oklch(0.32 0.01 40);
+  --muted: oklch(0.95 0.01 60); /* #F2F1E9 Seashell Sand */
+  --muted-foreground: oklch(0.32 0.01 40); /* #46403F Woodland Oak at 60% */
+  --accent: oklch(0.61 0.16 40); /* #F76B3C Citrus Sunrise */
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.82 0.02 50); /* #D0B7A1 Coconut Husk */
+  --input: oklch(0.82 0.02 50);
+  --ring: oklch(0.61 0.16 40); /* #F76B3C Citrus Sunrise */
+  --chart-1: oklch(0.61 0.16 40); /* Citrus Sunrise */
+  --chart-2: oklch(0.28 0.06 160); /* Legacy Green */
+  --chart-3: oklch(0.78 0.10 80); /* Golden Sunset */
+  --chart-4: oklch(0.67 0.06 160); /* Ocean Mist */
+  --chart-5: oklch(0.77 0.04 155); /* Coastal Breeze */
+  --radius: 0.625rem;
+  --sidebar: oklch(0.95 0.01 60);
+  --sidebar-foreground: oklch(0.32 0.01 40);
+  --sidebar-primary: oklch(0.61 0.16 40);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.95 0.01 60);
+  --sidebar-accent-foreground: oklch(0.32 0.01 40);
+  --sidebar-border: oklch(0.82 0.02 50);
+  --sidebar-ring: oklch(0.61 0.16 40);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.61 0.16 40); /* Citrus Sunrise remains consistent */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.61 0.16 40); /* Citrus Sunrise */
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.61 0.16 40);
+  --chart-1: oklch(0.61 0.16 40);
+  --chart-2: oklch(0.28 0.06 160);
+  --chart-3: oklch(0.78 0.10 80);
+  --chart-4: oklch(0.67 0.06 160);
+  --chart-5: oklch(0.708 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.61 0.16 40);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.61 0.16 40);
+}
+
+@theme inline {
+  /* HICV Brand Color Utilities */
+  --color-citrus-sunrise: #F76B3C;
+  --color-coral-reef: #FF9B75;
+  --color-rustic-sunset: #D8734F;
+  --color-golden-sunset: #F3B54A;
+  --color-ocean-mist: #5FA6A6;
+  --color-coastal-breeze: #9BC5B7;
+  --color-legacy-green: #1C4B34;
+  --color-seashell-sand: #F2F1E9;
+  --color-coconut-husk: #D0B7A1;
+  --color-woodland-oak: #46403F;
+
+  /* Legacy color utilities for compatibility */
+  --color-holly-orange: #F76B3C;
+  --color-holly-green: #1C4B34;
+  --color-user-bubble: #F2F1E9;
+  --color-tour-button: #F3B54A;
+  --color-primary-text: #46403F;
+  --color-secondary-text: #46403F;
+  --color-light-text: #46403F;
+  --color-success: #1C4B34;
+  --color-border-light: #D0B7A1;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Updated voice activation pulse to use Citrus Sunrise */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.33);
+  }
+  40%,
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+.voice-pulse::before {
+  content: "";
+  position: absolute;
+  border: 1px solid #F76B3C; /* Citrus Sunrise */
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.voice-active {
+  animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Message animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.4s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Waveform animation for Holly speaking */
+@keyframes waveform {
+  0%, 100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-waveform {
+  animation: waveform 0.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Subtle moving gradient background using HICV Seashell Sand tints */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-animation {
+  background: linear-gradient(
+    135deg,
+    #F2F1E9 0%,      /* Seashell Sand 100% */
+    #F5F3EC 25%,     /* Seashell Sand 95% */
+    #F8F6F0 50%,     /* Seashell Sand 90% */
+    #FBF9F4 75%,     /* Seashell Sand 85% */
+    #F2F1E9 100%     /* Seashell Sand 100% */
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
