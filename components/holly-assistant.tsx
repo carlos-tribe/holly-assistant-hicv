@@ -95,31 +95,13 @@ export function HollyAssistant() {
 
   // Handle voice activation
   const toggleVoice = () => {
-    const wasInactive = !isVoiceActive
     setIsVoiceActive(!isVoiceActive)
 
-    // If activating voice for first time, proceed with welcome
-    if (wasInactive && bookingState.currentStep === 'active-package') {
-      setTimeout(() => {
-        addMessage("holly", "Hi! I'm Holli, your AI booking assistant. I can help you book your vacation just like a normal phone call.")
+    // TODO: Initialize WebRTC connection here
+    // Server will send welcome message and initial state via WebSocket
+    // Example: ws.send({ type: 'init', bookingState: { zipCode, guestCount } })
 
-        setTimeout(() => {
-          addMessage("holly", "Let me confirm your details to get started.")
-
-          setTimeout(() => {
-            addMessage("holly", `I have your zip code as ${bookingState.zipCode} and ${bookingState.guestCount} guests. Is this correct?`)
-
-            setBookingState((prev) => ({
-              ...prev,
-              completedSteps: ["active-package"],
-              currentStep: "verify-details"
-            }))
-          }, 1200)
-        }, 1200)
-      }, 1000)
-    }
-
-    if (!wasInactive) {
+    if (!isVoiceActive) {
       // Clean up when voice is deactivated
       setCurrentTranscript("")
       setIsProcessing(false)
@@ -148,23 +130,11 @@ export function HollyAssistant() {
     setMessages((prev) => [...prev, newMessage])
   }
 
-  // toggleVoice is now defined earlier in the file (line 78)
-
-  const presentDestinationDefault = () => {
-    const preferredDestId = bookingState.selectedDestination || 'orlando'
-    const preferredDest = getDestinationById(preferredDestId)
-    if (preferredDest) {
-      addMessage("holly", `Perfect! Your vacation package includes ${preferredDest.name}, ${preferredDest.state} - ${preferredDest.tagline.toLowerCase()}.`)
-
-      setTimeout(() => {
-        addMessage("holly", `Would you like to continue with ${preferredDest.name}, or would you like to explore other destinations?`)
-      }, 2500)
-    }
-  }
+  // TODO: Destination presentation removed - server handles initial destination intro
 
   const handleDestinationChoice = (choice: 'keep' | 'explore') => {
     if (choice === 'keep') {
-      // Keep Orlando, go straight to dates
+      // Keep current destination, go straight to dates
       // Mark BOTH destination-choice AND select-destination as completed
       setBookingState(prev => ({
         ...prev,
@@ -174,10 +144,8 @@ export function HollyAssistant() {
         currentStep: 'choose-dates'
       }))
 
-      addMessage('user', 'Keep Orlando')
-      setTimeout(() => {
-        addMessage('holly', "Perfect! Sticking with Orlando. Now, when would you like to travel?")
-      }, 1000)
+      addMessage('user', `Keep ${bookingState.selectedDestination}`)
+      // TODO: Server responds with date selection prompt
 
     } else {
       // Explore destinations, go to TikTok swipe UI
@@ -189,10 +157,8 @@ export function HollyAssistant() {
       }))
 
       addMessage('user', 'I want to explore other destinations')
-      setTimeout(() => {
-        addMessage('holly', "Great! Let's explore destinations. Swipe through to see what's available.")
-        setExplorationMode(true)
-      }, 1000)
+      setExplorationMode(true)
+      // TODO: Server responds with destination exploration guidance
     }
   }
 
@@ -204,24 +170,43 @@ export function HollyAssistant() {
     setCurrentTranscript("")
     setIsProcessing(true)
 
-    // Add user message
+    // Add user message locally
     addMessage("user", text)
 
-    // TODO: Your engineer should replace this with real server intent processing
-    // Example flow:
-    // 1. Receive server response with intent data
-    // 2. Parse intent (destination, dates, times, etc.)
-    // 3. Update booking state via processIntent()
-    // 4. Play audio response from server
+    // TODO: Send to server via WebSocket
+    // Server will respond with: { message: string, intent: Intent, audio?: ArrayBuffer }
+    // Call handleServerResponse() when response arrives
+    // DO NOT add Holly messages here - only the server generates Holly responses
+  }, [isProcessing])
 
-    setTimeout(() => {
-      addMessage("holly", "Received: " + text)
-      setIsProcessing(false)
-    }, 1000)
-  }, [bookingState, isProcessing])
+  // TODO: Server response handler - your engineer should implement this
+  // This is called when server sends a response via WebSocket/WebRTC
+  const handleServerResponse = useCallback((response: {
+    message?: string
+    intent?: any
+    audio?: ArrayBuffer
+  }) => {
+    // 1. Display Holly's message from server
+    if (response.message) {
+      addMessage('holly', response.message)
+    }
+
+    // 2. Update booking state based on server intent
+    if (response.intent) {
+      processIntent(response.intent)
+    }
+
+    // 3. Play audio response if provided
+    if (response.audio) {
+      // TODO: playAudio(response.audio)
+    }
+
+    setIsProcessing(false)
+  }, [])
 
   // TODO: This shows the PATTERN for updating booking state based on server intents
   // Your engineer should adapt this to handle real server response data
+  // IMPORTANT: This function should ONLY update state - NO addMessage() calls!
   const processIntent = (intent: any) => {
     switch (intent.type) {
       case 'details_verification':
@@ -307,9 +292,6 @@ export function HollyAssistant() {
       case 'date_selection':
         const dates = intent.entities.dates
         if (dates?.checkIn && dates?.checkOut) {
-          // Mock property assignment based on guest count (in real app, would query availability)
-          const assignedPropertyId = bookingState.guestCount <= 2 ? 1 : bookingState.guestCount <= 4 ? 2 : 3
-
           setBookingState((prev) => ({
             ...prev,
             checkInDate: dates.checkIn,
@@ -318,21 +300,7 @@ export function HollyAssistant() {
             currentStep: "schedule-tour"
           }))
           setHighlightedDates(undefined)
-
-          // Holly announces property assignment
-          setTimeout(() => {
-            const propertyNames: Record<number, string> = {
-              1: 'Holiday Inn Express® & Suites Cocoa Beach',
-              2: 'Crowne Plaza® Melbourne – Oceanfront',
-              3: 'Holiday Inn Express® & Suites Cocoa'
-            }
-            const roomTypes: Record<number, string> = {
-              1: 'beachfront 2-bedroom suite',
-              2: 'oceanfront premium suite',
-              3: 'spacious 3-bedroom family suite'
-            }
-            addMessage('holly', `Perfect! I've got you staying at the ${propertyNames[assignedPropertyId]} - a ${roomTypes[assignedPropertyId]} perfect for ${bookingState.guestCount} guests. Now let's schedule your resort tour.`)
-          }, 1000)
+          // TODO: Server announces property assignment and tour scheduling prompt
         } else if (dates?.checkIn || dates?.checkOut) {
           // Show highlighted dates while user is discussing them
           setHighlightedDates({
@@ -355,11 +323,7 @@ export function HollyAssistant() {
               completedSteps: [...prev.completedSteps, 'choose-flexible-dates'],
               currentStep: 'schedule-tour'
             }))
-
-            // Holly announces the locked-in dates and property
-            setTimeout(() => {
-              addMessage('holly', `Excellent choice! I've locked in ${option.label} at the ${option.propertyName}. Now let's schedule your resort tour.`)
-            }, 1000)
+            // TODO: Server announces flexible date confirmation and tour scheduling prompt
           }
         }
         break
@@ -539,9 +503,7 @@ export function HollyAssistant() {
                       onClick={() => {
                         addMessage('user', "I accept")
                         setQualificationsAccepted(true)
-                        setTimeout(() => {
-                          addMessage('holly', "Perfect! Your reservation is confirmed!")
-                        }, 1000)
+                        // TODO: Server sends confirmation message
                       }}
                       className="px-10 py-6 text-lg font-semibold bg-[#1C4B34] hover:bg-[#1C4B34]/90 text-white rounded-xl"
                     >
@@ -552,9 +514,7 @@ export function HollyAssistant() {
                       variant="outline"
                       onClick={() => {
                         addMessage('user', "I decline")
-                        setTimeout(() => {
-                          addMessage('holly', "I understand. Your reservation has been canceled. Thank you for your interest in Holiday Inn Club Vacations!")
-                        }, 1000)
+                        // TODO: Server sends cancellation message
                       }}
                       className="px-10 py-6 text-lg font-semibold border-2 border-[#D0B7A1] text-[#46403F] hover:bg-[#F2F1E9] rounded-xl"
                     >

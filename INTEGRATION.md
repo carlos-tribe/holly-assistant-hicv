@@ -338,6 +338,35 @@ const addMessage = (role: "holly" | "user", content: string) => {
 
 **Your engineer should**: Keep this pattern when adding messages from server responses.
 
+### **CRITICAL: Server-Driven Message Pattern**
+
+**ALL Holly responses MUST come from the LLM/server.** There are ZERO hardcoded Holly messages in this integration-ready branch.
+
+**Pattern**:
+```typescript
+// ❌ WRONG - No hardcoded Holly messages
+addMessage('holly', "Great choice! Here's what I found...")
+
+// ✅ CORRECT - Only server generates Holly messages
+const handleServerResponse = (response: ServerResponse) => {
+  if (response.message) {
+    addMessage('holly', response.message)  // Message FROM server
+  }
+  if (response.intent) {
+    processIntent(response.intent)  // Update state only
+  }
+}
+```
+
+**Integration Flow**:
+1. User speaks → `addMessage('user', text)` locally
+2. Send text to server via WebSocket
+3. Server responds with `{ message: string, intent: Intent, audio?: ArrayBuffer }`
+4. Call `handleServerResponse(response)`
+5. Display server message + update state + play audio
+
+**See `holly-assistant.tsx:182`** for the `handleServerResponse()` pattern implementation.
+
 ---
 
 ## Booking Flow Steps
